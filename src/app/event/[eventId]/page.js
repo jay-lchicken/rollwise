@@ -17,6 +17,7 @@ export default function Home() {
 const [isDeletingAttendee, setIsDeletingAttendee] = useState(false);
   const params = useParams();
   const eventId = params.eventId;
+  const [attendeeEmail, setAttendeeEmail] = useState(null);
 
   useEffect(() => {
     if (!isSignedIn || !user) return;
@@ -249,7 +250,15 @@ const [isDeletingAttendee, setIsDeletingAttendee] = useState(false);
                               <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center text-white font-semibold text-sm mr-4">
                                 {person.name.charAt(0).toUpperCase()}
                               </div>
-                              <div className="font-medium text-slate-800">{person.name}</div>
+                              <div className={"flex flex-col"}>
+
+
+                                <div className="font-medium text-slate-800">{person.name}</div>
+                                <p className="text-slate-500 text-sm">
+  Date Marked: {new Date(person.dateadded).toLocaleString()}
+</p>
+
+                              </div>
                             </div>
                           </td>
                           <td className="px-6 py-4 text-slate-600">{person.email}</td>
@@ -271,6 +280,7 @@ const [isDeletingAttendee, setIsDeletingAttendee] = useState(false);
   onClick={async () => {
     if (confirm("Are you sure you want to delete this attendee?")) {
       try {
+        setAttendeeEmail(person.email)
         setIsDeletingAttendee(true);
         const response = await fetch("/api/deleteAttendee", {
           method: "POST",
@@ -297,7 +307,7 @@ const [isDeletingAttendee, setIsDeletingAttendee] = useState(false);
     }
   }}
   className="disabled:opacity-50 flex items-center justify-center w-12 h-12 bg-gradient-to-r from-red-500 to-pink-600 text-white font-semibold rounded-full hover:from-red-600 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg group-hover:shadow-xl"
-  // disabled={isDeletingEvent}
+  disabled={isDeletingAttendee && attendeeEmail === person.email}
 >
   <svg className="w-5 h-5" fill="none" stroke="currentColor"
        viewBox="0 0 24 24">

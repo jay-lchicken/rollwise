@@ -180,7 +180,9 @@ export default function Home() {
 
                       <div className="p-6">
                         <div className="grid gap-4">
-                          {events.map((event, index) => (
+                          {[...events]
+  .sort((a, b) => b.id - a.id)
+  .map((event, index) => (
                               <div
                                   key={event.id}
                                   className="group bg-white/40 backdrop-blur-sm rounded-2xl p-6 border border-white/30 hover:border-blue-200 transition-all duration-300 hover:shadow-lg hover:bg-white/60"
@@ -196,6 +198,10 @@ export default function Home() {
                                         {event.name}
                                       </h3>
                                       <p className="text-slate-500 text-sm">Event ID: {event.id}</p>
+                                      <p className="text-slate-500 text-sm">
+  Date Added: {new Date(event.dateadded).toLocaleString()}
+</p>
+
                                     </div>
                                   </div>
                                   <div className={"flex flex-row gap-8"}>

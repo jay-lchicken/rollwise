@@ -28,7 +28,7 @@ export async function POST(request) {
     try {
         await client.connect();
         const res = await client.query(`
-        SELECT id, name FROM events where hashed_userid_email = $1;`, [hash]);
+        SELECT id, name, dateadded FROM events where hashed_userid_email = $1;`, [hash]);
         return NextResponse.json({rows: res.rows}, { status: 200 });
     } catch (err) {
         return NextResponse.json({ error: 'Database error', details: err.message }, { status: 500 });
