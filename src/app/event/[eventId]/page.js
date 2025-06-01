@@ -399,7 +399,7 @@ const [isDeletingAttendee, setIsDeletingAttendee] = useState(false);
 
               <div className="bg-blue-50/50 rounded-2xl p-4 mb-6 border border-blue-100">
                 <p className="text-sm text-slate-700 mb-2 font-medium">Format Instructions:</p>
-                <code className="text-sm bg-white/60 px-3 py-1 rounded-lg border">Name, Email</code>
+                <code className="text-sm bg-white/60 px-3 py-1 rounded-lg border text-black">Name, Email</code>
                 <p className="text-xs text-slate-500 mt-2">Enter one person per line</p>
               </div>
 
