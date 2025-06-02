@@ -10,7 +10,6 @@ export async function POST(request) {
     }
     const eventId = body.eventId;
 
-
     const client = new Client({
         user: 'postgres',
         host: process.env.PG_HOST,
@@ -22,8 +21,11 @@ export async function POST(request) {
     try {
         await client.connect();
         const res = await client.query(`
-        SELECT name, ispublic FROM events where id = $1;`, [eventId]);
-        return NextResponse.json({rows: res.rows[0]}, { status: 200 });
+        SELECT *
+FROM mark
+         JOIN events ON events.id = mark.event_id::int
+WHERE events.ispublic = true and events.id = $1 ;`, [eventId]);
+        return NextResponse.json({rows: res.rows}, { status: 200 });
     } catch (err) {
         return NextResponse.json({ error: 'Database error', details: err.message }, { status: 500 });
     } finally {
