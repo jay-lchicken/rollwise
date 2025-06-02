@@ -1,8 +1,12 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🗓️ Event Attendance Tracker
 
-## Getting Started
+A simple web application to track attendance using PostgreSQL and Clerk authentication.
 
-First, run the development server:
+---
+
+## 🚀 Getting Started
+
+To start the development server, run one of the following commands:
 
 ```bash
 npm run dev
@@ -13,24 +17,59 @@ pnpm dev
 # or
 bun dev
 ```
+Then, open http://localhost:3000 in your browser to view the application.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+You can begin editing the project by modifying the file at:
+```bash
+app/page.js
+```
+The page will automatically reload as you make changes.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# 🏗️ Self-Hosting
 
-## Learn More
+To run this project on your own infrastructure:
 
-To learn more about Next.js, take a look at the following resources:
+1. Set Up a PostgreSQL Database
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Run the following SQL to create the required tables:
+```sql
+CREATE TABLE IF NOT EXISTS public.events (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255),
+    hashed_userid_email TEXT,
+    dateadded TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+CREATE TABLE IF NOT EXISTS public.mark (
+    event_id VARCHAR NOT NULL,
+    hashed_userid_email VARCHAR NOT NULL,
+    email VARCHAR NOT NULL,
+    name VARCHAR,
+    isattended BOOLEAN DEFAULT FALSE NOT NULL,
+    dateadded TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    CONSTRAINT unique_event_email UNIQUE (event_id, email)
+);
+```
+You can run this SQL using a GUI like DataGrip, pgAdmin, or via psql in the terminal.
 
-## Deploy on Vercel
+2. Set Up Clerk for Authentication
+	•	Go to https://clerk.com and create a project.
+	•	Obtain your Publishable Key and Secret Key from the Clerk dashboard.
+	•	Configure allowed redirect URLs to include your local or deployed domain.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. Configure Environment Variables
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Create a .env file in the root directory of your project and add the following:
+
+```env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=YOUR_CLERK_PUBLIC_KEY
+CLERK_SECRET_KEY=YOUR_CLERK_SECRET_KEY
+
+PG_HOST=YOUR_DATABASE_HOST
+PG_PORT=YOUR_DATABASE_PORT
+PG_USER=YOUR_DATABASE_USER
+PG_PASSWORD=YOUR_DATABASE_PASSWORD
+PG_DATABASE=YOUR_DATABASE_NAME
+```
+
