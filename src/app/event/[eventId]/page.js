@@ -255,7 +255,7 @@ const [isDeletingAttendee, setIsDeletingAttendee] = useState(false);
 
                                 <div className="font-medium text-slate-800">{person.name}</div>
                                 <p className="text-slate-500 text-sm">
-  Date Marked: {new Date(person.dateadded).toLocaleString()}
+  Date Updated: {new Date(person.dateadded).toLocaleString()}
 </p>
 
                               </div>
