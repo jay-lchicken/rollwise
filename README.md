@@ -38,7 +38,8 @@ CREATE TABLE IF NOT EXISTS public.events (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255),
     hashed_userid_email TEXT,
-    dateadded TIMESTAMPTZ DEFAULT NOW() NOT NULL
+    dateadded TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    ispublic BOOLEAN DEFAULT FALSE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS public.mark (
