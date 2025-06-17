@@ -22,8 +22,8 @@ export async function POST(request) {
     try {
         await client.connect();
         const res = await client.query(`
-        SELECT name, ispublic, isrestricted FROM events where id = $1;`, [eventId]);
-        return NextResponse.json({rows: res.rows[0]}, { status: 200 });
+        SELECT isrestricted FROM events where id = $1`, [eventId]);
+        return NextResponse.json({rows: res.rows[0].isrestricted}, { status: 200 });
     } catch (err) {
         return NextResponse.json({ error: 'Database error', details: err.message }, { status: 500 });
     } finally {

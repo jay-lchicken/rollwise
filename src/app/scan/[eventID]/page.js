@@ -73,7 +73,6 @@ export default function Home() {
       } else {
         setMarked(true);
         setTimeout(() => {
-          // Could redirect or show success message
         }, 2000);
       }
     } catch (error) {

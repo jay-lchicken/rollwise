@@ -32,9 +32,8 @@ export async function POST(request) {
   try {
     await client.connect();
 
-    // Retrieve the hashed_userid_email from the events table
     const eventResult = await client.query(
-      `SELECT hashed_userid_email FROM events WHERE id = $1;`,
+      `SELECT hashed_userid_email, isrestricted FROM events WHERE id = $1;`,
       [eventId]
     );
 
@@ -46,21 +45,40 @@ export async function POST(request) {
     }
 
     const hashed_userid_email = eventResult.rows[0].hashed_userid_email;
+    const isRestricted = eventResult.rows[0].isrestricted;
 
-    // Insert or update attendance record
-    const markResult = await client.query(
-      `
-      INSERT INTO mark (event_id, hashed_userid_email, name, email, isattended)
-      VALUES ($1, $2, $3, $4, true)
-      ON CONFLICT (event_id, email)
-      DO UPDATE SET 
-        name = EXCLUDED.name,
-        hashed_userid_email = EXCLUDED.hashed_userid_email,
-        isattended = true
-      RETURNING *;
-      `,
-      [eventId, hashed_userid_email, name, email]
+    let markResult;
+    if (isRestricted) {
+  const existingMark = await client.query(
+    `SELECT 1 FROM mark WHERE event_id = $1 AND email = $2 LIMIT 1`,
+    [eventId, email]
+  );
+
+  if (existingMark.rowCount === 0) {
+    return NextResponse.json(
+      {
+         error: "Event Restricted", details: "User not registered, attendance cannot be marked."
+
+      },
+      { status: 403 }
     );
+  }
+}
+
+markResult = await client.query(
+  `
+  INSERT INTO mark (event_id, hashed_userid_email, name, email, isattended)
+  VALUES ($1, $2, $3, $4, true)
+  ON CONFLICT (event_id, email)
+  DO UPDATE SET 
+    hashed_userid_email = EXCLUDED.hashed_userid_email,
+    isattended = true
+  RETURNING *;
+  `,
+  [eventId, hashed_userid_email, name, email]
+);
+
+
 
     return NextResponse.json(
       {

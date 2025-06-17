@@ -20,6 +20,8 @@ export default function Home() {
   const [attendeeEmail, setAttendeeEmail] = useState(null);
   const [isPublic, setIsPublic] = useState(false);
   const [isTogglingPublic, setIsTogglingPublic] = useState(false);
+  const [isRestricted, setIsRestricted] = useState(false);
+  const [isTogglingRestricted, setIsTogglingRestricted] = useState(false);
 
   useEffect(() => {
     if (!isSignedIn || !user) return;
@@ -54,6 +56,7 @@ export default function Home() {
           setEventExists(false);
         }
         setIsPublic(data.rows.ispublic);
+        setIsRestricted(data.rows.isrestricted);
       } catch (error) {
         console.error("Failed to fetch event details:", error);
         setEventExists(false);
@@ -263,7 +266,181 @@ export default function Home() {
                 </svg>
                 Show QR Code
               </button>
-
+              {!isRestricted ? (
+  <button
+    onClick={() => {
+      if (
+        confirm(
+          "Are you sure you want to only allow people who have been added to the event to mark their attendance? This will restrict attendance marking to only those who have been added."
+        )
+      ) {
+        setIsTogglingRestricted(true);
+        fetch("/api/toggleRestrictToAdded", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            eventId: eventId,
+            userId: user.id,
+            email: user.emailAddresses[0].emailAddress,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.error) {
+              alert("Failed to toggle public/private: " + data.error);
+            } else {
+              window.location.reload();
+            }
+          })
+          .catch((err) => {
+            alert("Error toggling public/private.");
+            console.error(err);
+          });
+      }
+    }}
+    className="disabled:opacity-20 inline-flex items-center px-4 py-2 sm:px-8 sm:py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-semibold rounded-2xl hover:from-violet-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
+    disabled={isTogglingRestricted}
+  >
+    {/* Enhanced Lock Icon */}
+    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <defs>
+        <linearGradient id="lockGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="currentColor" stopOpacity="1" />
+          <stop offset="100%" stopColor="currentColor" stopOpacity="0.7" />
+        </linearGradient>
+      </defs>
+      {/* Lock body */}
+      <rect
+        x="5"
+        y="11"
+        width="14"
+        height="10"
+        rx="2"
+        ry="2"
+        stroke="url(#lockGradient)"
+        strokeWidth="2"
+        fill="rgba(255,255,255,0.1)"
+      />
+      {/* Lock shackle */}
+      <path
+        d="M8 11V7a4 4 0 1 1 8 0v4"
+        stroke="url(#lockGradient)"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* Keyhole */}
+      <circle
+        cx="12"
+        cy="16"
+        r="1.5"
+        fill="currentColor"
+        opacity="0.8"
+      />
+      <rect
+        x="11.5"
+        y="16.5"
+        width="1"
+        height="2"
+        fill="currentColor"
+        opacity="0.8"
+        rx="0.5"
+      />
+    </svg>
+    Restrict Attendance
+  </button>
+) : (
+  <button
+    onClick={() => {
+      if (
+        confirm(
+          "Are you sure you want to allow anyone to mark their attendance? This will allow everyone, including unknown people, to mark their attendance."
+        )
+      ) {
+        setIsTogglingRestricted(true);
+        fetch("/api/toggleRestrictToAdded", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            eventId: eventId,
+            userId: user.id,
+            email: user.emailAddresses[0].emailAddress,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.error) {
+              alert("Failed to toggle public/private: " + data.error);
+            } else {
+              window.location.reload();
+            }
+          })
+          .catch((err) => {
+            alert("Error toggling public/private.");
+            console.error(err);
+          });
+      }
+    }}
+    className="disabled:opacity-20 inline-flex items-center px-4 py-2 sm:px-8 sm:py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-semibold rounded-2xl hover:from-violet-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
+    disabled={isTogglingRestricted}
+  >
+    {/* Enhanced Unlock Icon */}
+    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <defs>
+        <linearGradient id="unlockGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="currentColor" stopOpacity="1" />
+          <stop offset="100%" stopColor="currentColor" stopOpacity="0.7" />
+        </linearGradient>
+      </defs>
+      {/* Lock body */}
+      <rect
+        x="5"
+        y="11"
+        width="14"
+        height="10"
+        rx="2"
+        ry="2"
+        stroke="url(#unlockGradient)"
+        strokeWidth="2"
+        fill="rgba(255,255,255,0.1)"
+      />
+      {/* Open shackle */}
+      <path
+        d="M8 11V7a4 4 0 0 1 8 0"
+        stroke="url(#unlockGradient)"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {/* Unlock indicator - small arc */}
+      <path
+        d="M16 9a1 1 0 0 1 2 0"
+        stroke="url(#unlockGradient)"
+        strokeWidth="2"
+        strokeLinecap="round"
+        fill="none"
+      />
+      {/* Keyhole */}
+      <circle
+        cx="12"
+        cy="16"
+        r="1.5"
+        fill="currentColor"
+        opacity="0.8"
+      />
+      <rect
+        x="11.5"
+        y="16.5"
+        width="1"
+        height="2"
+        fill="currentColor"
+        opacity="0.8"
+        rx="0.5"
+      />
+    </svg>
+    Unrestrict Attendance
+  </button>
+)}
               {isPublic ? (
                 <div className="flex flex-col sm:flex-row gap-2 items-center justify-center px-2">
                   <button

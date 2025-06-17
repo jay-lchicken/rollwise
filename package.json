@@ -11,7 +11,7 @@
   "dependencies": {
     "@clerk/nextjs": "^6.20.2",
     "lucide-react": "^0.511.0",
-    "next": "15.1.4",
+    "next": "^15.2.3",
     "pg": "^8.16.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -402,7 +402,6 @@ export default function Home() {
                   onKeyPress={(e) => e.key === "Enter" && handleNewEvent()}
                 />
               </div>
-
               <div className="flex flex-col sm:flex-row gap-3 px-2">
                 <button
                   className="flex-1 px-4 py-2 sm:px-6 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-2xl hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-30 text-sm sm:text-base"
