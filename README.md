@@ -60,8 +60,15 @@ You can run this SQL using a GUI like DataGrip, pgAdmin, or via psql in the term
 	•	Go to https://clerk.com and create a project.
 	•	Obtain your Publishable Key and Secret Key from the Clerk dashboard.
 	•	Configure allowed redirect URLs to include your local or deployed domain.
+	Note: For Clerk Authentication, you need to go to "Configure" in the project dashboard, go to Session Management -> Sessions -> Customise Session Tokens and put this inside claims:
+```
+{
+	"email": "{{user.primary_email_address}}"
+}
+```
 
-3. Configure Environment Variables
+
+4. Configure Environment Variables
 
 Create a .env file in the root directory of your project and add the following:
 
