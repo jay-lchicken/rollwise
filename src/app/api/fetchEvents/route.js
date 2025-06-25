@@ -1,21 +1,23 @@
 import { NextResponse } from "next/server";
 import { createHash } from 'crypto';
 import { Client } from "pg";
-export async function POST(request) {
-    let body;
-    try {
-        body = await request.json();
-    } catch {
-        return NextResponse.json({ error: 'Invalid or missing JSON body' }, { status: 400 });
-    }
+import { getAuth } from "@clerk/nextjs/server";
 
-    const userId = body.userId;
-    const email = body.email;
+export async function GET(request) {
+    const { userId, sessionClaims } = getAuth(request);
+    if (!userId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    console.log("sessionClaims:", sessionClaims);
+    const email = sessionClaims?.email;
+    if (!email) {
+        return NextResponse.json({ error: 'Email not found in session claims' }, { status: 400 });
+    }
+    console.log({ userId, email });
+    console.log("sessionClaims:", sessionClaims);
     const hash = createHash('sha256')
         .update(userId + email)
         .digest('hex');
-
-
     const client = new Client({
         user: 'postgres',
         host: process.env.PG_HOST,
@@ -25,11 +27,13 @@ export async function POST(request) {
     });
     console.log("Connecting to database with hash: ", hash);
     console.log("PG_HOST: ", process.env.PG_HOST);
+
     try {
         await client.connect();
         const res = await client.query(`
-        SELECT id, name, dateadded FROM events where hashed_userid_email = $1;`, [hash]);
-        return NextResponse.json({rows: res.rows}, { status: 200 });
+        SELECT id, name, dateadded FROM events WHERE hashed_userid_email = $1;`, [hash]);
+
+        return NextResponse.json({ rows: res.rows }, { status: 200 });
     } catch (err) {
         return NextResponse.json({ error: 'Database error', details: err.message }, { status: 500 });
     } finally {

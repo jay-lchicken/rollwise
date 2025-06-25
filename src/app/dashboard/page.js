@@ -20,14 +20,10 @@ export default function Home() {
     async function fetchEvents() {
       try {
         const response = await fetch("/api/fetchEvents", {
-          method: "POST",
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            userId: user.id,
-            email: user.emailAddresses[0].emailAddress,
-          }),
         });
         const data = await response.json();
         setEvents(data.rows);
@@ -365,7 +361,7 @@ export default function Home() {
 
       {showNewEventForm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl w-full max-w-md border border-white/20 overflow-hidden">
+          <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl w-full max-w-md border border-white/20 overflow-hidden">
             <div className="p-6 sm:p-8">
               <div className="text-center mb-6 px-2">
                 <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
