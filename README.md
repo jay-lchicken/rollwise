@@ -40,6 +40,8 @@ CREATE TABLE IF NOT EXISTS public.events (
     hashed_userid_email TEXT,
     dateadded TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     ispublic BOOLEAN DEFAULT FALSE NOT NULL
+    isrestricted BOOLEAN DEFAULT FALSE NOT NULL
+
 );
 
 CREATE TABLE IF NOT EXISTS public.mark (
