@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { Client } from "pg";
 import { createHash } from 'crypto';
-import {getAuth} from "@clerk/nextjs/server";
+import { Client } from "pg";
+import { getAuth } from "@clerk/nextjs/server";
+
 export async function POST(request) {
     const { userId, sessionClaims } = getAuth(request);
     if (!userId) {
@@ -15,17 +16,11 @@ export async function POST(request) {
     } catch {
         return NextResponse.json({ error: 'Invalid or missing JSON body' }, { status: 400 });
     }
-
     const eventId = body.eventId;
 
     const hash = createHash('sha256')
         .update(userId + email)
         .digest('hex');
-    if (!eventId|| !hash) {
-        return NextResponse.json({ error: 'Missing eventId' }, { status: 400 });
-    }
-    console.log(hash)
-
     const client = new Client({
         user: 'postgres',
         host: process.env.PG_HOST,
@@ -33,29 +28,18 @@ export async function POST(request) {
         password: process.env.PG_PASSWORD,
         port: parseInt(process.env.PG_PORT, 10),
     });
-
-    console.log("PG_HOST:", process.env.PG_HOST);
-
+    console.log("PG_HOST: ", process.env.PG_HOST);
     try {
         await client.connect();
-
-        const selectRes = await client.query(
-            `SELECT ispublic FROM events WHERE id = $1 and  hashed_userid_email = $2`,
-            [eventId, hash]
-        );
-
-        if (selectRes.rowCount === 0) {
+        const res = await client.query(`
+        SELECT name, ispublic, isrestricted, hashed_userid_email FROM events where id = $1;`, [eventId]);
+        if (res.rows[0].hashed_userid_email != hash){
             return NextResponse.json({ error: 'Event not found' }, { status: 404 });
+        }else{
+            return NextResponse.json({rows: res.rows[0]}, { status: 200 });
+
+
         }
-        const currentValue = selectRes.rows[0].ispublic;
-        const newValue = !currentValue;
-        await client.query(
-            `UPDATE events SET ispublic = $1 WHERE id = $2`,
-            [newValue, eventId]
-        );
-
-        return NextResponse.json({ success: true, ispublic: newValue }, { status: 200 });
-
     } catch (err) {
         return NextResponse.json({ error: 'Database error', details: err.message }, { status: 500 });
     } finally {

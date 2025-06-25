@@ -1,8 +1,17 @@
 import { NextResponse } from "next/server";
 import { createHash } from 'crypto';
 import { Client } from "pg";
+import { getAuth } from "@clerk/nextjs/server";
+
 
 export async function POST(request) {
+    const { userId, sessionClaims } = getAuth(request);
+    if (!userId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    console.log("sessionClaims:", sessionClaims);
+    const email = sessionClaims?.email;
+
     let body;
     try {
         body = await request.json();
@@ -10,7 +19,7 @@ export async function POST(request) {
         return NextResponse.json({ error: 'Invalid or missing JSON body' }, { status: 400 });
     }
 
-    const { userId, email, name } = body;
+    const {name } = body;
 
     if (!userId || !email || !name) {
         return NextResponse.json({ error: 'Missing userId, email, or name' }, { status: 400 });

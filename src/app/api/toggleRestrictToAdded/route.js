@@ -1,7 +1,14 @@
 import { NextResponse } from "next/server";
 import { Client } from "pg";
 import { createHash } from 'crypto';
+import {getAuth} from "@clerk/nextjs/server";
 export async function POST(request) {
+    const { userId, sessionClaims } = getAuth(request);
+    if (!userId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    console.log("sessionClaims:", sessionClaims);
+    const email = sessionClaims?.email;
     let body;
     try {
         body = await request.json();
@@ -10,8 +17,7 @@ export async function POST(request) {
     }
 
     const eventId = body.eventId;
-    const email = body.email;
-    const userId = body.userId;
+
     const hash = createHash('sha256')
         .update(userId + email)
         .digest('hex');

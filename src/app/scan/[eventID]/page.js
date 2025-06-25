@@ -62,7 +62,6 @@ export default function Home() {
         },
         body: JSON.stringify({
           eventId: eventId,
-          email: user.emailAddresses[0].emailAddress,
           name: user.fullName,
         }),
       });

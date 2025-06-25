@@ -1,7 +1,14 @@
 import { NextResponse } from "next/server";
 import { Client } from "pg";
+import {getAuth} from "@clerk/nextjs/server";
 
 export async function POST(request) {
+  const { userId, sessionClaims } = getAuth(request);
+    if (!userId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    console.log("sessionClaims:", sessionClaims);
+    const email = sessionClaims?.email;
   let body;
   try {
     body = await request.json();
@@ -12,7 +19,7 @@ export async function POST(request) {
     );
   }
 
-  const { eventId, name, email } = body;
+  const { eventId, name} = body;
 
   if (!eventId || !name || !email) {
     return NextResponse.json(

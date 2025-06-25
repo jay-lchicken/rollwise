@@ -32,8 +32,6 @@ export default function Home() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            userId: user.id,
-            email: user.emailAddresses[0].emailAddress,
             eventId: eventId,
           }),
         });
@@ -46,7 +44,7 @@ export default function Home() {
 
     async function fetchDetails() {
       try {
-        const response = await fetch("/api/getEventDetails", {
+        const response = await fetch("/api/getEventDetailsHost", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ eventId: eventId }),
@@ -59,6 +57,7 @@ export default function Home() {
         setIsRestricted(data.rows.isrestricted);
       } catch (error) {
         console.error("Failed to fetch event details:", error);
+
         setEventExists(false);
       } finally {
         setLoading(false);
@@ -114,8 +113,6 @@ export default function Home() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           eventId: eventId,
-          userId: user.id,
-          email: user.emailAddresses[0].emailAddress,
           people: peopleArray,
         }),
       });
@@ -280,8 +277,7 @@ export default function Home() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             eventId: eventId,
-            userId: user.id,
-            email: user.emailAddresses[0].emailAddress,
+
           }),
         })
           .then((res) => res.json())
@@ -363,8 +359,6 @@ export default function Home() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             eventId: eventId,
-            userId: user.id,
-            email: user.emailAddresses[0].emailAddress,
           }),
         })
           .then((res) => res.json())
@@ -456,8 +450,6 @@ export default function Home() {
                           headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({
                             eventId: eventId,
-                            userId: user.id,
-                            email: user.emailAddresses[0].emailAddress,
                           }),
                         })
                           .then((res) => res.json())
@@ -552,8 +544,7 @@ export default function Home() {
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
                           eventId: eventId,
-                          userId: user.id,
-                          email: user.emailAddresses[0].emailAddress,
+
                         }),
                       })
                         .then((res) => res.json())
@@ -684,10 +675,6 @@ export default function Home() {
                                         },
                                         body: JSON.stringify({
                                           id: eventId,
-                                          userId: user.id,
-                                          email:
-                                            user.emailAddresses[0]
-                                              .emailAddress,
                                           deleteEmail: person.email,
                                         }),
                                       }
@@ -807,6 +794,20 @@ export default function Home() {
                   className="rounded-xl"
                 />
               </div>
+              <button
+      onClick={async () => {
+        try {
+          await navigator.clipboard.writeText(
+            `${window.location.protocol}//${window.location.host}/scan/${eventId}`
+          );
+        } catch (e) {
+          alert("Failed to copy link");
+        }
+      }}
+      className="w-full py-3 sm:py-4 px-6 sm:px-8 mb-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-2xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base"
+    >
+      Copy QR Link ({`${window.location.protocol}//${window.location.host}/scan/${eventId}`})
+    </button>
 
               <button
                 onClick={() => setShowQRCode(false)}
