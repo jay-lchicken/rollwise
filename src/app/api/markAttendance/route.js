@@ -40,7 +40,7 @@ export async function POST(request) {
     await client.connect();
 
     const eventResult = await client.query(
-      `SELECT hashed_userid_email, isrestricted FROM events WHERE id = $1;`,
+      `SELECT hashed_userid_email, isrestricted, is_open FROM events WHERE id = $1;`,
       [eventId]
     );
 
@@ -53,6 +53,17 @@ export async function POST(request) {
 
     const hashed_userid_email = eventResult.rows[0].hashed_userid_email;
     const isRestricted = eventResult.rows[0].isrestricted;
+    const isOpen = eventResult.rows[0].is_open;
+    if (!isOpen) {
+    return NextResponse.json(
+      {
+         error: "Event Closed", details: "The event is currently closed for attendance."
+
+      },
+      { status: 403 }
+    );
+  }
+
 
     let markResult;
     if (isRestricted) {
