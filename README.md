@@ -39,8 +39,9 @@ CREATE TABLE IF NOT EXISTS public.events (
     name VARCHAR(255),
     hashed_userid_email TEXT,
     dateadded TIMESTAMPTZ DEFAULT NOW() NOT NULL,
-    ispublic BOOLEAN DEFAULT FALSE NOT NULL
-    isrestricted BOOLEAN DEFAULT FALSE NOT NULL
+    ispublic BOOLEAN DEFAULT FALSE NOT NULL,
+    isrestricted BOOLEAN DEFAULT FALSE NOT NULL,
+    is_open BOOLEAN DEFAULT TRUE NOT NULL
 
 );
 
