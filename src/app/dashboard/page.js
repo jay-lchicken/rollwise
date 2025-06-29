@@ -5,7 +5,7 @@ import {cookies} from "next/headers";
 import { Suspense } from 'react'
 async function fetchData() {
     try {
-        const cookieStore = cookies();
+        const cookieStore = await cookies();
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/fetchEvents`, {
           method: "GET",
@@ -35,7 +35,7 @@ async function fetchData() {
       </div>
     </div>
   );
-export default async function home(){
+export default async function dashboard(){
     const events = await fetchData();
     return(
         <Suspense fallback={<LoadingSpinner/>}>

@@ -22,7 +22,6 @@ export default function Home() {
   const [isTogglingPublic, setIsTogglingPublic] = useState(false);
 
   useEffect(() => {
-    if (!isSignedIn || !user) return;
 
     const fetchEvents = async () => {
       try {
@@ -82,7 +81,6 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 18.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
               </div>
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-red-500 to-rose-500 rounded-full animate-pulse shadow-lg"></div>
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-red-600 to-rose-600 bg-clip-text text-transparent mb-3">
               Event Not Found
@@ -131,29 +129,13 @@ export default function Home() {
       </div>
       <h3 className="text-xl sm:text-2xl font-bold text-slate-800 mb-3">No Attendees Yet</h3>
       <p className="text-slate-600 mb-8 max-w-md mx-auto leading-relaxed text-sm sm:text-base px-4">
-        Your event is ready to go! Start building your attendee list by adding people below.
+        The event currently has no attendees.
       </p>
     </div>
   );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-blue-50 to-cyan-50">
-      <div className="fixed top-4 right-4 z-50">
-        <SignOutButton className="Btn">
-
-
-
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className={"sign"}>
-              <svg viewBox="0 0 512 512">
-              <path
-                  d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path>
-            </svg>
-            </div>
-            <div className="text">Logout</div>
-          </div>
-        </SignOutButton>
-      </div>
 
       {!eventExists ? (
           <EventNotFound/>
@@ -232,7 +214,7 @@ export default function Home() {
                   <div>
                     <h2 className="text-2xl sm:text-3xl font-bold text-slate-800">Attendee Registry</h2>
                     <p className="text-slate-600 mt-1 sm:mt-2 text-sm sm:text-lg">
-                      {people.length} {people.length === 1 ? 'person' : 'people'} registered for this event
+                      {people.length} {people.length === 1 ? 'person' : 'people'} attended this event
                     </p>
                   </div>
                   <div className="flex items-center space-x-3 sm:space-x-6 text-xs sm:text-sm">

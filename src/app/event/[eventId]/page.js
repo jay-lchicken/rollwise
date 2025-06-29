@@ -767,7 +767,7 @@ export default function Home() {
                         Attendee List
                       </h2>
                       <p className="text-slate-600 mt-1 text-sm sm:text-base">
-                        {people.length} people registered
+                        {people.length} people attended
                       </p>
                     </div>
                     <div className="flex items-center space-x-4 text-xs sm:text-sm">
