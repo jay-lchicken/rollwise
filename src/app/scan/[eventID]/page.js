@@ -229,7 +229,7 @@ export default function Home() {
                 Your smart attendance tracking solution. Sign in to mark your attendance and join the event.
               </p>
 
-              <SignInButton mode="modal">
+              <SignInButton signUpForceRedirectUrl={`${window.location.href}`} mode="modal">
                 <button className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-4 px-8 rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 transform hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
                   <div className="flex items-center justify-center">
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
