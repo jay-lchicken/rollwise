@@ -254,9 +254,13 @@ export default function Home() {
                     <div key={person.id} className="border-b border-slate-200/50 p-4 hover:bg-white/60 transition-all duration-200">
                       <div className="flex items-start space-x-3">
                         <div className="relative flex-shrink-0">
-                          <div className="w-12 h-12 bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                            {person.name.charAt(0).toUpperCase()}
-                          </div>
+                           {person.image_url !== null ? (
+  <img src={person.image_url} alt={person.name} className="w-8 h-8 sm:w-10 sm:h-10 rounded-full mr-3" />
+) : (
+  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center text-white font-semibold text-sm sm:text-base mr-3">
+    {person.name.charAt(0).toUpperCase()}
+  </div>
+)}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-2">
@@ -307,10 +311,13 @@ export default function Home() {
                       <tr key={person.id} className="hover:bg-white/60 transition-all duration-200 group">
                         <td className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
                           <div className="flex items-center">
-                            <div className="relative">
-                              <div className="w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg mr-3 sm:mr-4 shadow-lg group-hover:scale-110 transition-transform duration-200">
-                                {person.name.charAt(0).toUpperCase()}
-                              </div>
+                            <div className="relative"> {person.image_url !== null ? (
+  <img src={person.image_url} alt={person.name} className="w-8 h-8 sm:w-10 sm:h-10 rounded-full mr-3" />
+) : (
+  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center text-white font-semibold text-sm sm:text-base mr-3">
+    {person.name.charAt(0).toUpperCase()}
+  </div>
+)}
                             </div>
                             <div className="flex flex-col">
                               <div className="font-semibold text-slate-800 text-base sm:text-lg">{person.name}</div>

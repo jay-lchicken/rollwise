@@ -21,10 +21,11 @@ export async function POST(request) {
     try {
         await client.connect();
         const res = await client.query(`
-        SELECT *
+        SELECT *, mark.name
 FROM mark
          JOIN events ON events.id = mark.event_id::int
 WHERE events.ispublic = true and events.id = $1 ;`, [eventId]);
+        console.log(res.rows)
         return NextResponse.json({rows: res.rows}, { status: 200 });
     } catch (err) {
         return NextResponse.json({ error: 'Database error', details: err.message }, { status: 500 });

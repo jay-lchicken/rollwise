@@ -807,9 +807,13 @@ export default function Home() {
                         >
                           <td className="px-4 sm:px-6 py-3">
                             <div className="flex items-center">
-                              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center text-white font-semibold text-sm sm:text-base mr-3">
-                                {person.name.charAt(0).toUpperCase()}
-                              </div>
+                              {person.image_url !== null ? (
+  <img src={person.image_url} alt={person.name} className="w-8 h-8 sm:w-10 sm:h-10 rounded-full mr-3" />
+) : (
+  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center text-white font-semibold text-sm sm:text-base mr-3">
+    {person.name.charAt(0).toUpperCase()}
+  </div>
+)}
                               <div className="flex flex-col">
                                 <div className="font-medium text-slate-800 text-sm sm:text-base">
                                   {person.name}

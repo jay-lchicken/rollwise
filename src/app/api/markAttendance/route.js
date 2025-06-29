@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Client } from "pg";
 import {getAuth} from "@clerk/nextjs/server";
-
+import { clerkClient } from "@clerk/nextjs/server";
 export async function POST(request) {
   const { userId, sessionClaims } = getAuth(request);
     if (!userId) {
@@ -9,6 +9,11 @@ export async function POST(request) {
     }
     console.log("sessionClaims:", sessionClaims);
     const email = sessionClaims?.email;
+    const clients = await clerkClient()
+
+  const user = await clients.users.getUser(userId);
+  console.log(user.imageUrl);
+  //Above is the profile picture of the user
   let body;
   try {
     body = await request.json();
@@ -85,15 +90,16 @@ export async function POST(request) {
 
 markResult = await client.query(
   `
-  INSERT INTO mark (event_id, hashed_userid_email, name, email, isattended)
-  VALUES ($1, $2, $3, $4, true)
+  INSERT INTO mark (event_id, hashed_userid_email, name, email, isattended, image_url)
+  VALUES ($1, $2, $3, $4, true, $5)
   ON CONFLICT (event_id, email)
   DO UPDATE SET 
     hashed_userid_email = EXCLUDED.hashed_userid_email,
-    isattended = true
+    isattended = true,
+    image_url = $5
   RETURNING *;
   `,
-  [eventId, hashed_userid_email, name, email]
+  [eventId, hashed_userid_email, name, email, user.imageUrl]
 );
 
 
@@ -106,6 +112,7 @@ markResult = await client.query(
       { status: 200 }
     );
   } catch (err) {
+    console.log(err.message)
     return NextResponse.json(
       { error: "Database error", details: err.message },
       { status: 500 }
