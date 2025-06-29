@@ -52,7 +52,8 @@ CREATE TABLE IF NOT EXISTS public.mark (
     name VARCHAR,
     isattended BOOLEAN DEFAULT FALSE NOT NULL,
     dateadded TIMESTAMPTZ DEFAULT NOW() NOT NULL,
-    CONSTRAINT unique_event_email UNIQUE (event_id, email)
+    CONSTRAINT unique_event_email UNIQUE (event_id, email),
+    image_url VARCHAR(255) DEFAULT NULL
 );
 ```
 You can run this SQL using a GUI like DataGrip, pgAdmin, or via psql in the terminal.
