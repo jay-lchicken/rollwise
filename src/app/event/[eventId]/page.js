@@ -6,6 +6,7 @@ import { SignedIn, SignedOut, SignOutButton, useUser } from "@clerk/nextjs";
 import QRCode from "react-qr-code";
 
 export default function Home() {
+  const [isAddingPeople, setIsAddingPeople] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
   const [people, setPeople] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -98,6 +99,7 @@ export default function Home() {
   );
 
   const handleAddPeople = async () => {
+    setIsAddingPeople(true);
     const lines = peopleInput
       .split("\n")
       .filter((line) => line.trim() !== "");
@@ -124,6 +126,7 @@ export default function Home() {
       if (result.error) {
         alert("Failed to add people: " + result.error);
       } else {
+
         window.location.reload();
       }
     } catch (err) {
@@ -1055,8 +1058,9 @@ export default function Home() {
 
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
-                  className="flex-1 px-4 py-2 sm:px-6 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-2xl hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base"
+                  className="disabled:opacity-50 flex-1 px-4 py-2 sm:px-6 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-2xl hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base"
                   onClick={handleAddPeople}
+                  disabled={isAddingPeople}
                 >
                   Add People
                 </button>
