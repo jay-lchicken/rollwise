@@ -73,7 +73,7 @@ export async function POST(request) {
     let markResult;
     if (isRestricted) {
   const existingMark = await client.query(
-    `SELECT 1 FROM mark WHERE event_id = $1 AND email = $2 LIMIT 1`,
+    `SELECT 1 FROM mark WHERE event_id = $1 AND LOWER(email) = LOWER($2) LIMIT 1`,
     [eventId, email]
   );
 
