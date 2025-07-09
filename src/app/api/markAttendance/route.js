@@ -96,7 +96,7 @@ markResult = await client.query(
   DO UPDATE SET 
     hashed_userid_email = EXCLUDED.hashed_userid_email,
     isattended = true,
-    dateadded = DEFAULT
+    dateadded = DEFAULT,
     image_url = $5
   RETURNING *;
   `,
