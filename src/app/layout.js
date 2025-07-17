@@ -27,6 +27,7 @@ export default function RootLayout({ children }) {
         >
         {children}
         </body>
+        <script defer src="https://umami.techtime.coffee/script.js" data-website-id="0e0f1f77-d2a1-424f-ba1e-3c84428cb8b4"></script>
         </html>
     </ClerkProvider>
   );
