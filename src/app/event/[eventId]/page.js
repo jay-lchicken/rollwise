@@ -248,7 +248,6 @@ export default function Home() {
   // --- Render ---
   return (
     <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
-      {/* Status Section */}
       <div className="px-6 py-4 bg-gradient-to-r from-slate-50 to-gray-50 border-b border-gray-100">
         <div className="flex flex-wrap gap-3 justify-center items-center">
           <StatusIndicator
@@ -271,7 +270,7 @@ export default function Home() {
 
       {/* Action Buttons Section */}
       <div className="p-6">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-4xl mx-auto">
+        <div className={`grid grid-cols-2 md:grid-cols-3 ${isPublic ? "lg:grid-cols-6": "lg:grid-cols-5"} gap-4 max-w-4xl mx-auto`}>
           <ActionButton
             icon={<Plus className="w-5 h-5" />}
             label="Add People"
