@@ -3,8 +3,19 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { SignedIn, SignedOut, SignOutButton, useUser } from "@clerk/nextjs";
+import {
+  Plus,
+  QrCode,
+  Lock,
+  Unlock,
+  Eye,
+  EyeOff,
+  Copy,
+  CheckCircle,
+  AlertCircle,
+  Loader2
+} from 'lucide-react';
 import QRCode from "react-qr-code";
-
 export default function Home() {
   const [isAddingPeople, setIsAddingPeople] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
@@ -71,6 +82,255 @@ export default function Home() {
     fetchEvents();
     fetchDetails();
   }, [isSignedIn, user]);
+
+ function ImprovedActionBar() {
+    const [copySuccess, setCopySuccess] = useState(false);
+
+
+  async function handleToggleRestricted() {
+    const confirmMessage = isRestricted
+      ? "Allow anyone to mark their attendance? This will allow everyone, including unknown people, to participate."
+      : "Restrict to added people only? Only those who have been added to the event will be able to mark attendance.";
+
+    if (window.confirm(confirmMessage)) {
+      setIsTogglingRestricted(true);
+      try {
+        const res = await fetch("/api/toggleRestrictToAdded", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ eventId }),
+        });
+        const data = await res.json();
+        if (data.error) {
+          alert("Failed to update restriction settings: " + data.error);
+        } else {
+          window.location.reload();
+        }
+      } catch (err) {
+        alert("Error updating restriction settings.");
+        console.error(err);
+      }
+      setIsTogglingRestricted(false);
+    }
+  }
+
+  async function handleTogglePublic() {
+    const confirmMessage = isPublic
+      ? "Make results private? This will hide the attendance results from public view."
+      : "Publish results publicly? This will make the attendance results visible to anyone with the link.";
+
+    if (window.confirm(confirmMessage)) {
+      setIsTogglingPublic(true);
+      try {
+        const res = await fetch("/api/togglePublic", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ eventId }),
+        });
+        const data = await res.json();
+        if (data.error) {
+          alert("Failed to update visibility settings: " + data.error);
+        } else {
+          window.location.reload();
+        }
+      } catch (err) {
+        alert("Error updating visibility settings.");
+        console.error(err);
+      }
+      setIsTogglingPublic(false);
+    }
+  }
+
+  async function handleToggleOpen() {
+    const confirmMessage = isOpen
+      ? "Lock the event? This will prevent new registrations and attendance marking."
+      : "Unlock the event? This will allow new people to register and mark their attendance.";
+
+    if (window.confirm(confirmMessage)) {
+      setIsTogglingOpen(true);
+      try {
+        const res = await fetch("/api/toggleClosed", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ eventId }),
+        });
+        const data = await res.json();
+        if (data.error) {
+          alert("Failed to update event status: " + data.error);
+        } else {
+          window.location.reload();
+        }
+      } catch (err) {
+        alert("Error updating event status.");
+        console.error(err);
+      }
+      setIsTogglingOpen(false);
+    }
+  }
+
+  async function handleCopyResultsLink() {
+    try {
+      const url = `${window.location.protocol}//${window.location.host}/results/${eventId}`;
+      await navigator.clipboard.writeText(url);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    } catch (e) {
+      alert("Failed to copy link");
+    }
+  }
+
+  // Reusable ActionButton component with improved styling
+  function ActionButton({
+    icon,
+    label,
+    tooltip,
+    onClick,
+    loading = false,
+    variant = 'primary',
+    success = false
+  }) {
+    const baseClasses = "group relative flex flex-col items-center justify-center min-w-[80px] h-20 rounded-2xl font-medium text-sm transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none";
+
+    const variants = {
+      primary: "bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white focus:ring-blue-300",
+      success: "bg-gradient-to-br from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white focus:ring-emerald-300",
+      warning: "bg-gradient-to-br from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white focus:ring-amber-300",
+      danger: "bg-gradient-to-br from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white focus:ring-rose-300",
+      secondary: "bg-gradient-to-br from-slate-500 to-slate-600 hover:from-slate-600 hover:to-slate-700 text-white focus:ring-slate-300",
+      purple: "bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white focus:ring-purple-300"
+    };
+
+    return (
+      <button
+        className={`${baseClasses} ${variants[variant]}`}
+        onClick={onClick}
+        disabled={loading}
+        title={tooltip}
+      >
+        <div className="flex flex-col items-center gap-1">
+          <div className="relative">
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : success ? (
+              <CheckCircle className="w-5 h-5" />
+            ) : (
+              icon
+            )}
+          </div>
+          <span className="text-xs leading-tight">{label}</span>
+        </div>
+
+        {/* Tooltip */}
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+          {tooltip}
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+        </div>
+      </button>
+    );
+  }
+
+  // Status indicator component
+  function StatusIndicator({ label, active, variant = 'primary' }) {
+    const variants = {
+      primary: active ? 'bg-blue-100 text-blue-800 border-blue-200' : 'bg-gray-100 text-gray-600 border-gray-200',
+      success: active ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-gray-100 text-gray-600 border-gray-200',
+      warning: active ? 'bg-amber-100 text-amber-800 border-amber-200' : 'bg-gray-100 text-gray-600 border-gray-200',
+    };
+
+    return (
+      <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${variants[variant]}`}>
+        <div className={`w-2 h-2 rounded-full mr-2 ${active ? 'bg-current' : 'bg-gray-400'}`}></div>
+        {label}
+      </div>
+    );
+  }
+
+  // --- Render ---
+  return (
+    <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
+      {/* Status Section */}
+      <div className="px-6 py-4 bg-gradient-to-r from-slate-50 to-gray-50 border-b border-gray-100">
+        <div className="flex flex-wrap gap-3 justify-center items-center">
+          <StatusIndicator
+            label={isRestricted ? "Restricted Access" : "Open Access"}
+            active={!isRestricted}
+            variant="success"
+          />
+          <StatusIndicator
+            label={isPublic ? "Public Results" : "Private Results"}
+            active={isPublic}
+            variant="primary"
+          />
+          <StatusIndicator
+            label={isOpen ? "Event Open" : "Event Locked"}
+            active={isOpen}
+            variant="warning"
+          />
+        </div>
+      </div>
+
+      {/* Action Buttons Section */}
+      <div className="p-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-4xl mx-auto">
+          <ActionButton
+            icon={<Plus className="w-5 h-5" />}
+            label="Add People"
+            tooltip="Add new people to the event"
+            onClick={() => setShowNewPeopleForm(true)}
+            variant="success"
+          />
+
+          <ActionButton
+            icon={<QrCode className="w-5 h-5" />}
+            label="QR Code"
+            tooltip="Show QR code for easy access"
+            onClick={() => setShowQRCode(true)}
+            variant="purple"
+          />
+
+          <ActionButton
+            icon={isRestricted ? <Unlock className="w-5 h-5" /> : <Lock className="w-5 h-5" />}
+            label={isRestricted ? "Unrestrict" : "Restrict"}
+            tooltip={isRestricted ? "Allow anyone to mark attendance" : "Restrict to added people only"}
+            onClick={handleToggleRestricted}
+            loading={isTogglingRestricted}
+            variant={isRestricted ? "warning" : "secondary"}
+          />
+
+          <ActionButton
+            icon={isPublic ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            label={isPublic ? "Make Private" : "Publish"}
+            tooltip={isPublic ? "Hide attendance results from public" : "Make attendance results public"}
+            onClick={handleTogglePublic}
+            loading={isTogglingPublic}
+            variant={isPublic ? "secondary" : "primary"}
+          />
+
+          <ActionButton
+            icon={isOpen ? <Lock className="w-5 h-5" /> : <Unlock className="w-5 h-5" />}
+            label={isOpen ? "Lock Event" : "Unlock Event"}
+            tooltip={isOpen ? "Prevent new registrations" : "Allow new registrations"}
+            onClick={handleToggleOpen}
+            loading={isTogglingOpen}
+            variant={isOpen ? "danger" : "success"}
+          />
+
+          {isPublic && (
+            <ActionButton
+              icon={<Copy className="w-5 h-5" />}
+              label="Copy Link"
+              tooltip="Copy results link to clipboard"
+              onClick={handleCopyResultsLink}
+              variant="secondary"
+              success={copySuccess}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
   const EventNotFound = () => (
     <div className="flex flex-col items-center text-center py-8 px-4">
@@ -239,516 +499,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8 px-2">
-              <button
-                onClick={() => setShowNewPeopleForm(true)}
-                className="inline-flex items-center px-4 py-2 sm:px-8 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-2xl hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
-              >
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-                  />
-                </svg>
-                Add People
-              </button>
-
-              <button
-                onClick={() => setShowQRCode(true)}
-                className="inline-flex items-center px-4 py-2 sm:px-8 sm:py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-semibold rounded-2xl hover:from-violet-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
-              >
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
-                  />
-                </svg>
-                Show QR Code
-              </button>
-              {!isRestricted ? (
-  <button
-    onClick={() => {
-      if (
-        confirm(
-          "Are you sure you want to only allow people who have been added to the event to mark their attendance? This will restrict attendance marking to only those who have been added."
-        )
-      ) {
-        setIsTogglingRestricted(true);
-        fetch("/api/toggleRestrictToAdded", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            eventId: eventId,
-
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.error) {
-              alert("Failed to toggle public/private: " + data.error);
-            } else {
-              window.location.reload();
-            }
-          })
-          .catch((err) => {
-            alert("Error toggling public/private.");
-            console.error(err);
-          });
-      }
-    }}
-    className="disabled:opacity-20 inline-flex items-center px-4 py-2 sm:px-8 sm:py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-semibold rounded-2xl hover:from-violet-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
-    disabled={isTogglingRestricted}
-  >
-    {/* Enhanced Lock Icon */}
-    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <defs>
-        <linearGradient id="lockGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="currentColor" stopOpacity="1" />
-          <stop offset="100%" stopColor="currentColor" stopOpacity="0.7" />
-        </linearGradient>
-      </defs>
-      {/* Lock body */}
-      <rect
-        x="5"
-        y="11"
-        width="14"
-        height="10"
-        rx="2"
-        ry="2"
-        stroke="url(#lockGradient)"
-        strokeWidth="2"
-        fill="rgba(255,255,255,0.1)"
-      />
-      {/* Lock shackle */}
-      <path
-        d="M8 11V7a4 4 0 1 1 8 0v4"
-        stroke="url(#lockGradient)"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {/* Keyhole */}
-      <circle
-        cx="12"
-        cy="16"
-        r="1.5"
-        fill="currentColor"
-        opacity="0.8"
-      />
-      <rect
-        x="11.5"
-        y="16.5"
-        width="1"
-        height="2"
-        fill="currentColor"
-        opacity="0.8"
-        rx="0.5"
-      />
-    </svg>
-    Restrict Attendance
-  </button>
-) : (
-  <button
-    onClick={() => {
-      if (
-        confirm(
-          "Are you sure you want to allow anyone to mark their attendance? This will allow everyone, including unknown people, to mark their attendance."
-        )
-      ) {
-        setIsTogglingRestricted(true);
-        fetch("/api/toggleRestrictToAdded", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            eventId: eventId,
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.error) {
-              alert("Failed to toggle public/private: " + data.error);
-            } else {
-              window.location.reload();
-            }
-          })
-          .catch((err) => {
-            alert("Error toggling public/private.");
-            console.error(err);
-          });
-      }
-    }}
-    className="disabled:opacity-20 inline-flex items-center px-4 py-2 sm:px-8 sm:py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-semibold rounded-2xl hover:from-violet-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
-    disabled={isTogglingRestricted}
-  >
-    {/* Enhanced Unlock Icon */}
-    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <defs>
-        <linearGradient id="unlockGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="currentColor" stopOpacity="1" />
-          <stop offset="100%" stopColor="currentColor" stopOpacity="0.7" />
-        </linearGradient>
-      </defs>
-      {/* Lock body */}
-      <rect
-        x="5"
-        y="11"
-        width="14"
-        height="10"
-        rx="2"
-        ry="2"
-        stroke="url(#unlockGradient)"
-        strokeWidth="2"
-        fill="rgba(255,255,255,0.1)"
-      />
-      {/* Open shackle */}
-      <path
-        d="M8 11V7a4 4 0 0 1 8 0"
-        stroke="url(#unlockGradient)"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {/* Unlock indicator - small arc */}
-      <path
-        d="M16 9a1 1 0 0 1 2 0"
-        stroke="url(#unlockGradient)"
-        strokeWidth="2"
-        strokeLinecap="round"
-        fill="none"
-      />
-      {/* Keyhole */}
-      <circle
-        cx="12"
-        cy="16"
-        r="1.5"
-        fill="currentColor"
-        opacity="0.8"
-      />
-      <rect
-        x="11.5"
-        y="16.5"
-        width="1"
-        height="2"
-        fill="currentColor"
-        opacity="0.8"
-        rx="0.5"
-      />
-    </svg>
-    Unrestrict Attendance
-  </button>
-)}
-              {isPublic ? (
-                <div className="flex flex-col sm:flex-row gap-2 items-center justify-center px-2">
-                  <button
-                    onClick={() => {
-                      if (
-                        confirm(
-                          "Are you sure you want to make the results private? This will hide the attendance results from the public."
-                        )
-                      ) {
-                        setIsTogglingPublic(true);
-                        fetch("/api/togglePublic", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({
-                            eventId: eventId,
-                          }),
-                        })
-                          .then((res) => res.json())
-                          .then((data) => {
-                            if (data.error) {
-                              alert("Failed to toggle public/private: " + data.error);
-                            } else {
-                              window.location.reload();
-                            }
-                          })
-                          .catch((err) => {
-                            alert("Error toggling public/private.");
-                            console.error(err);
-                          });
-                      }
-                    }}
-                    className="disabled:opacity-20 inline-flex items-center px-4 py-2 sm:px-8 sm:py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-semibold rounded-2xl hover:from-violet-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
-                    disabled={isTogglingPublic}
-                  >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 12h14M12 5l7 7-7 7"
-                      />
-                    </svg>
-                    Make Results Private
-                  </button>
-
-                  <button
-                    className="copy"
-                    onClick={async () => {
-                      try {
-                        await navigator.clipboard.writeText(
-                          `${window.location.protocol}//${window.location.host}/results/${eventId}`
-                        );
-                      } catch (e) {
-                        alert("Failed to copy link");
-                      }
-                    }}
-                  >
-                    <span
-                      data-text-end="Copied!"
-                      data-text-initial="Copy to clipboard published link"
-                      className="tooltip"
-                    ></span>
-                    <span>
-                      <svg
-                        style={{ enableBackground: "new 0 0 512 512" }}
-                        viewBox="0 0 6.35 6.35"
-                        height="20"
-                        width="20"
-                        className="clipboard"
-                      >
-                        <g>
-                          <path
-                            fill="currentColor"
-                            d="M2.43.265c-.3 0-.548.236-.573.53h-.328a.74.74 0 0 0-.735.734v3.822a.74.74 0 0 0 .735.734H4.82a.74.74 0 0 0 .735-.734V1.529a.74.74 0 0 0-.735-.735h-.328a.58.58 0 0 0-.573-.53zm0 .529h1.49c.032 0 .049.017.049.049v.431c0 .032-.017.049-.049.049H2.43c-.032 0-.05-.017-.05-.049V.843c0-.032.018-.05.05-.05zm-.901.53h.328c.026.292.274.528.573.528h1.49a.58.58 0 0 0 .573-.529h.328a.2.2 0 0 1 .206.206v3.822a.2.2 0 0 1-.206.205H1.53a.2.2 0 0 1-.206-.205V1.529a.2.2 0 0 1 .206-.206z"
-                          ></path>
-                        </g>
-                      </svg>
-                      <svg
-                        style={{ enableBackground: "new 0 0 512 512" }}
-                        viewBox="0 0 24 24"
-                        height="18"
-                        width="18"
-                        className="checkmark"
-                      >
-                        <g>
-                          <path
-                            data-original="#000000"
-                            fill="currentColor"
-                            d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"
-                          ></path>
-                        </g>
-                      </svg>
-                    </span>
-                  </button>
-                </div>
-              ) : (
-                <button
-                  onClick={() => {
-                    if (
-                      confirm(
-                        "Are you sure you want to publish the results? This will make the attendance results public."
-                      )
-                    ) {
-                      setIsTogglingPublic(true);
-                      fetch("/api/togglePublic", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          eventId: eventId,
-
-                        }),
-                      })
-                        .then((res) => res.json())
-                        .then((data) => {
-                          if (data.error) {
-                            alert("Failed to toggle public/private: " + data.error);
-                          } else {
-                            window.location.reload();
-                          }
-                        })
-                        .catch((err) => {
-                          alert("Error toggling public/private.");
-                          console.error(err);
-                        });
-                    }
-                  }}
-                  className="disabled:opacity-20 inline-flex items-center px-4 py-2 sm:px-8 sm:py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-semibold rounded-2xl hover:from-violet-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
-                  disabled={isTogglingPublic}
-                >
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
-                  Publish Results
-                </button>
-              )}
-              {isOpen ? (
-  <button
-    onClick={() => {
-      if (
-        confirm(
-          "Are you sure you want to lock the event?"
-        )
-      ) {
-        setIsTogglingOpen(true);
-        fetch("/api/toggleClosed", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            eventId: eventId,
-
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.error) {
-              alert("Failed to toggle lock: " + data.error);
-            } else {
-              window.location.reload();
-            }
-          })
-          .catch((err) => {
-            alert("Error toggling lock.");
-            console.error(err);
-          });
-      }
-    }}
-    className="disabled:opacity-20 inline-flex items-center px-4 py-2 sm:px-8 sm:py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-semibold rounded-2xl hover:from-violet-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
-    disabled={isTogglingOpen}
-  >
-    {/* Enhanced Lock Icon */}
-    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <defs>
-        <linearGradient id="lockGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="currentColor" stopOpacity="1" />
-          <stop offset="100%" stopColor="currentColor" stopOpacity="0.7" />
-        </linearGradient>
-      </defs>
-      {/* Lock body */}
-      <rect
-        x="5"
-        y="11"
-        width="14"
-        height="10"
-        rx="2"
-        ry="2"
-        stroke="url(#lockGradient)"
-        strokeWidth="2"
-        fill="rgba(255,255,255,0.1)"
-      />
-      {/* Lock shackle */}
-      <path
-        d="M8 11V7a4 4 0 1 1 8 0v4"
-        stroke="url(#lockGradient)"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {/* Keyhole */}
-      <circle
-        cx="12"
-        cy="16"
-        r="1.5"
-        fill="currentColor"
-        opacity="0.8"
-      />
-      <rect
-        x="11.5"
-        y="16.5"
-        width="1"
-        height="2"
-        fill="currentColor"
-        opacity="0.8"
-        rx="0.5"
-      />
-    </svg>
-    Lock
-  </button>
-) : (
-  <button
-    onClick={() => {
-      if (
-        confirm(
-          "Are you sure you want to unlock the event? This will allow new people to register and mark their attendance."
-        )
-      ) {
-        setIsTogglingOpen(true);
-        fetch("/api/toggleClosed", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            eventId: eventId,
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.error) {
-              alert("Failed to toggle lock: " + data.error);
-            } else {
-              window.location.reload();
-            }
-          })
-          .catch((err) => {
-            alert("Error toggling lock.");
-            console.error(err);
-          });
-      }
-    }}
-    className="disabled:opacity-20 inline-flex items-center px-4 py-2 sm:px-8 sm:py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-semibold rounded-2xl hover:from-violet-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
-    disabled={isTogglingOpen}
-  >
-    {/* Enhanced Unlock Icon */}
-    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <defs>
-        <linearGradient id="unlockGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="currentColor" stopOpacity="1" />
-          <stop offset="100%" stopColor="currentColor" stopOpacity="0.7" />
-        </linearGradient>
-      </defs>
-      {/* Lock body */}
-      <rect
-        x="5"
-        y="11"
-        width="14"
-        height="10"
-        rx="2"
-        ry="2"
-        stroke="url(#unlockGradient)"
-        strokeWidth="2"
-        fill="rgba(255,255,255,0.1)"
-      />
-      {/* Open shackle */}
-      <path
-        d="M8 11V7a4 4 0 0 1 8 0"
-        stroke="url(#unlockGradient)"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {/* Unlock indicator - small arc */}
-      <path
-        d="M16 9a1 1 0 0 1 2 0"
-        stroke="url(#unlockGradient)"
-        strokeWidth="2"
-        strokeLinecap="round"
-        fill="none"
-      />
-      {/* Keyhole */}
-      <circle
-        cx="12"
-        cy="16"
-        r="1.5"
-        fill="currentColor"
-        opacity="0.8"
-      />
-      <rect
-        x="11.5"
-        y="16.5"
-        width="1"
-        height="2"
-        fill="currentColor"
-        opacity="0.8"
-        rx="0.5"
-      />
-    </svg>
-    Unlock Event
-  </button>
-)}
-            </div>
+           <ImprovedActionBar />
 
 
 
@@ -762,7 +513,7 @@ export default function Home() {
                 <EmptyState />
               </div>
             ) : (
-              <div className="bg-white/60 backdrop-blur-lg rounded-3xl shadow-xl border border-white/20 overflow-hidden">
+              <div className="bg-white/60 backdrop-blur-lg rounded-3xl shadow-xl border border-white/20 overflow-hidden mt-2">
                 <div className="p-4 sm:p-6 border-b border-white/20 bg-gradient-to-r from-slate-50/50 to-blue-50/50">
                   <div className="flex flex-col sm:flex-row items-center justify-between">
                     <div className="mb-4 sm:mb-0">
