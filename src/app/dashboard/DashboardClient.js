@@ -16,7 +16,6 @@ export default function Dashboard({APIEvents}) {
     const [openEntering, setOpenEntering] = useState(false);
     const [eventCode, setEventCode] = useState("");
 
-
     const handleNewEvent = async () => {
         setIsCreatingEvent(true);
         if (!eventName.trim()) {
@@ -53,274 +52,212 @@ export default function Dashboard({APIEvents}) {
     };
 
     const LoadingSpinner = () => (
-        <div
-            className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center px-4">
-            <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl p-8 sm:p-12 border border-white/20">
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
+            <div className="bg-slate-900/90 backdrop-blur-xl rounded-2xl border border-slate-800 p-8">
                 <div className="flex flex-col items-center space-y-4">
                     <div className="relative">
-                        <div
-                            className="w-16 h-16 border-4 border-blue-200 rounded-full animate-spin border-t-blue-600"></div>
-                        <div
-                            className="absolute inset-0 w-16 h-16 border-4 border-transparent rounded-full animate-pulse border-t-indigo-400"></div>
+                        <div className="w-10 h-10 border-2 border-slate-700 rounded-full animate-spin border-t-blue-500"></div>
                     </div>
-                    <p className="text-slate-600 font-medium text-base sm:text-lg">Loading events...</p>
+                    <p className="text-slate-300 font-medium">Loading events...</p>
                 </div>
             </div>
         </div>
     );
 
     const EmptyState = () => (
-        <div className="text-center py-16 px-4">
-            <div
-                className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center">
-                <svg
-                    className="w-12 h-12 text-blue-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
+        <div className="text-center py-16">
+            <div className="w-20 h-20 mx-auto mb-6 bg-slate-800 rounded-2xl flex items-center justify-center">
+                <svg className="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                 </svg>
             </div>
-            <h3 className="text-xl sm:text-2xl font-semibold text-slate-700 mb-2">No Events Yet</h3>
-            <p className="text-slate-500 text-base sm:text-lg mb-6">Create your first event to get started with
-                attendance tracking</p>
+            <h3 className="text-2xl font-semibold text-white mb-3">No Events Created</h3>
+            <p className="text-slate-400 text-lg mb-8 max-w-md mx-auto">Start managing attendance by creating your first event</p>
             <button
                 onClick={() => setShowNewEventForm(true)}
-                className="inline-flex items-center px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
+                className="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-500 transition-all duration-200 shadow-lg shadow-blue-600/25"
             >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
-                Create Your First Event
+                Create Event
             </button>
-
         </div>
     );
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+        <div className="min-h-screen bg-slate-950">
             <SignedIn>
-                <div className="fixed top-4 right-4 z-50">
-                    <SignOutButton className="Btn">
-                        <div className="flex items-center gap-2">
-                            <div className="sign">
-                                <svg viewBox="0 0 512 512">
-                                    <path
-                                        d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"
-                                    ></path>
-                                </svg>
+                {/* Modern Header */}
+                <div className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-xl sticky top-0 z-40">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex justify-between items-center h-16">
+                            <div className="flex items-center space-x-4">
+                                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-violet-600 rounded-xl flex items-center justify-center shadow-lg">
+                                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h1 className="text-xl font-bold text-white">RollWise</h1>
+                                    <p className="text-slate-400 text-xs">Event Management</p>
+                                </div>
                             </div>
-                            <span className="text">Logout</span>
+                            <SignOutButton>
+                                <button className="inline-flex items-center px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-all duration-200">
+                                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                    </svg>
+                                    Sign Out
+                                </button>
+                            </SignOutButton>
                         </div>
-                    </SignOutButton>
+                    </div>
                 </div>
 
                 {loading ? (
                     <LoadingSpinner/>
                 ) : (
-                    <div className="container mx-auto px-4 py-8">
-                        <div className="text-center mb-12 px-2">
-                            <div
-                                className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-6 shadow-lg">
-                                <svg
-                                    className="w-8 h-8 text-white"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                    />
-                                </svg>
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                        {/* Modern Page Header */}
+                        <div className="mb-8">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between">
+                                <div>
+                                    <h2 className="text-3xl font-bold text-white mb-2">Dashboard</h2>
+                                    <p className="text-slate-400 text-lg">Manage events and track attendance</p>
+                                </div>
+                                <div className="flex items-center gap-3 mt-4 sm:mt-0">
+                                    <div className="text-right">
+                                        <p className="text-sm text-slate-500">Total Events</p>
+                                        <p className="text-2xl font-bold text-white">{events.length}</p>
+                                    </div>
+                                </div>
                             </div>
-                            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-4">
-                                My Events
-                            </h1>
-                            <p className="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto px-2">
-                                Manage your events and track attendance with ease
-                            </p>
                         </div>
 
-                        <div className="flex justify-center mb-8 px-2">
+                        {/* Modern Action Bar */}
+                        <div className="flex flex-col sm:flex-row gap-4 mb-8">
                             <button
                                 onClick={() => setShowNewEventForm(true)}
-                                className="inline-flex items-center px-4 py-2 sm:px-8 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-2xl hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
+                                className="group inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-500 transition-all duration-200 shadow-lg shadow-blue-600/25 hover:shadow-blue-500/30 hover:scale-[1.02]"
                             >
-                                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                                    />
-                                </svg>
-                                New Event
+                                <div className="w-5 h-5 mr-3 rounded-md bg-blue-500 flex items-center justify-center group-hover:bg-blue-400 transition-colors">
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                    </svg>
+                                </div>
+                                Create New Event
                             </button>
                             <button
                                 onClick={() => setOpenEntering(true)}
-                                className="ml-2 inline-flex items-center px-4 py-2 sm:px-8 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-2xl hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
+                                className="group inline-flex items-center px-6 py-3 bg-emerald-600 text-white font-medium rounded-xl hover:bg-emerald-500 transition-all duration-200 shadow-lg shadow-emerald-600/25 hover:shadow-emerald-500/30 hover:scale-[1.02]"
                             >
-                                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M5 13l4 4L19 7"
-    />
-</svg>
+                                <div className="w-5 h-5 mr-3 rounded-md bg-emerald-500 flex items-center justify-center group-hover:bg-emerald-400 transition-colors">
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                </div>
                                 Mark Attendance
                             </button>
                         </div>
 
                         {events.length === 0 ? (
-                            <div
-                                className="bg-white/60 backdrop-blur-lg rounded-3xl shadow-xl border border-white/20 p-6 sm:p-8">
+                            <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl border border-slate-800 p-8">
                                 <EmptyState/>
                             </div>
                         ) : (
-                            <div
-                                className="bg-white/60 backdrop-blur-lg rounded-3xl shadow-xl border border-white/20 overflow-hidden">
-                                <div
-                                    className="p-4 sm:p-6 border-b border-white/20 bg-gradient-to-r from-slate-50/50 to-blue-50/50">
-                                    <div className="flex flex-col sm:flex-row items-center justify-between px-2">
-                                        <div className="mb-4 sm:mb-0">
-                                            <h2 className="text-xl sm:text-2xl font-bold text-slate-800">Event List</h2>
-                                            <p className="text-slate-600 text-sm sm:text-base mt-1">
-                                                {events.length} events created
-                                            </p>
-                                        </div>
-                                        <div className="text-xs sm:text-sm text-slate-500 text-center">
-                                            Click any event to manage attendees
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="p-4 sm:p-6">
-                                    <div className="grid gap-4">
-                                        {[...events]
-                                            .sort((a, b) => b.id - a.id)
-                                            .map((event) => (
-                                                <div
-                                                    key={event.id}
-                                                    className="group bg-white/40 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-white/30 hover:border-blue-200 transition-all duration-300 hover:shadow-lg hover:bg-white/60"
-                                                >
-                                                    <div
-                                                        className="flex flex-col sm:flex-row items-start sm:items-center justify-between">
-                                                        <div className="flex items-center space-x-4 mb-4 sm:mb-0">
-                                                            <div
-                                                                className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                                                                {event.name.charAt(0).toUpperCase()}
-                                                            </div>
-                                                            <div>
-                                                                <h3 className="text-lg sm:text-xl font-semibold text-slate-800 group-hover:text-blue-700 transition-colors duration-200">
-                                                                    {event.name}
-                                                                </h3>
-                                                                <p className="text-slate-500 text-xs sm:text-sm">
-                                                                    Event ID: {event.id}
-                                                                </p>
-                                                                <p className="text-slate-500 text-xs sm:text-sm">
-                                                                    Date Added:{" "}
-                                                                    {new Date(event.dateadded).toLocaleString()}
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                        <div className="flex flex-col sm:flex-row gap-3">
-                                                            <button
-                                                                onClick={async () => {
-                                                                    if (
-                                                                        confirm(
-                                                                            "Are you sure you want to delete this event?"
-                                                                        )
-                                                                    ) {
-                                                                        try {
-                                                                            setIsDeletingEvent(true);
-                                                                            const response = await fetch(
-                                                                                "/api/deleteEvent",
-                                                                                {
-                                                                                    method: "POST",
-                                                                                    headers: {
-                                                                                        "Content-Type": "application/json",
-                                                                                    },
-                                                                                    body: JSON.stringify({
-                                                                                        id: event.id,
-
-                                                                                    }),
-                                                                                }
-                                                                            );
-                                                                            const data = await response.json();
-                                                                            setIsDeletingEvent(false);
-                                                                            if (data.error) {
-                                                                                alert("Failed to delete event.");
-                                                                            } else {
-                                                                                setEvents((prevEvents) =>
-                                                                                    prevEvents.filter(
-                                                                                        (e) => e.id !== event.id
-                                                                                    )
-                                                                                );
-                                                                            }
-                                                                        } catch (error) {
-                                                                            alert("Error deleting event.");
-                                                                        }
-                                                                    }
-                                                                }}
-                                                                className="disabled:opacity-50 inline-flex items-center px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white font-semibold rounded-xl hover:from-red-600 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg group-hover:shadow-xl text-xs sm:text-sm"
-                                                                disabled={isDeletingEvent}
-                                                            >
-                                                                <svg
-                                                                    className="w-4 h-4 sm:w-5 sm:h-5 mr-2"
-                                                                    fill="none"
-                                                                    stroke="currentColor"
-                                                                    viewBox="0 0 24 24"
-                                                                >
-                                                                    <path
-                                                                        strokeLinecap="round"
-                                                                        strokeLinejoin="round"
-                                                                        strokeWidth={2}
-                                                                        d="M6 18L18 6M6 6l12 12"
-                                                                    />
-                                                                </svg>
-                                                                Delete
-                                                            </button>
-                                                            <button
-                                                                onClick={() => router.push(`/event/${event.id}`)}
-                                                                className="inline-flex items-center px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 shadow-lg group-hover:shadow-xl text-xs sm:text-sm"
-                                                            >
-                                                                <svg
-                                                                    className="w-4 h-4 sm:w-5 sm:h-5 mr-2"
-                                                                    fill="none"
-                                                                    stroke="currentColor"
-                                                                    viewBox="0 0 24 24"
-                                                                >
-                                                                    <path
-                                                                        strokeLinecap="round"
-                                                                        strokeLinejoin="round"
-                                                                        strokeWidth={2}
-                                                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                                                    />
-                                                                    <path
-                                                                        strokeLinecap="round"
-                                                                        strokeLinejoin="round"
-                                                                        strokeWidth={2}
-                                                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                                                                    />
-                                                                </svg>
-                                                                View Event
-                                                            </button>
-                                                        </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                {[...events]
+                                    .sort((a, b) => b.id - a.id)
+                                    .map((event) => (
+                                        <div
+                                            key={event.id}
+                                            className="group bg-slate-900/50 backdrop-blur-xl rounded-2xl border border-slate-800 hover:border-slate-700 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-slate-900/50"
+                                        >
+                                            {/* Event Header */}
+                                            <div className="p-6 border-b border-slate-800">
+                                                <div className="flex items-center space-x-4 mb-4">
+                                                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-violet-600 rounded-xl flex items-center justify-center shadow-lg">
+                                                        <span className="text-white font-bold text-lg">
+                                                            {event.name.charAt(0).toUpperCase()}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <h3 className="text-lg font-semibold text-white truncate group-hover:text-blue-400 transition-colors">
+                                                            {event.name}
+                                                        </h3>
+                                                        <p className="text-slate-500 text-sm">Event #{event.id}</p>
                                                     </div>
                                                 </div>
-                                            ))}
-                                    </div>
-                                </div>
+
+                                                <div className="space-y-2">
+                                                    <div className="flex justify-between items-center">
+                                                        <span className="text-slate-400 text-sm">Status</span>
+                                                        <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-emerald-900/30 text-emerald-400 border border-emerald-800">
+                                                            <div className="w-2 h-2 bg-emerald-400 rounded-full mr-2"></div>
+                                                            Active
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center">
+                                                        <span className="text-slate-400 text-sm">Created</span>
+                                                        <span className="text-slate-300 text-sm font-medium">
+                                                            {new Date(event.dateadded).toLocaleDateString('en-US', {
+                                                                month: 'short',
+                                                                day: 'numeric',
+                                                                year: 'numeric'
+                                                            })}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Action Buttons */}
+                                            <div className="p-6 space-y-3">
+                                                <button
+                                                    onClick={() => router.push(`/event/${event.id}`)}
+                                                    className="w-full inline-flex items-center justify-center px-4 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-500 transition-all duration-200 shadow-lg shadow-blue-600/20"
+                                                >
+                                                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                    </svg>
+                                                    Manage Event
+                                                </button>
+                                                <button
+                                                    onClick={async () => {
+                                                        if (confirm("Are you sure you want to delete this event?")) {
+                                                            try {
+                                                                setIsDeletingEvent(true);
+                                                                const response = await fetch("/api/deleteEvent", {
+                                                                    method: "POST",
+                                                                    headers: {"Content-Type": "application/json"},
+                                                                    body: JSON.stringify({id: event.id}),
+                                                                });
+                                                                const data = await response.json();
+                                                                setIsDeletingEvent(false);
+                                                                if (data.error) {
+                                                                    alert("Failed to delete event.");
+                                                                } else {
+                                                                    setEvents((prevEvents) =>
+                                                                        prevEvents.filter((e) => e.id !== event.id)
+                                                                    );
+                                                                }
+                                                            } catch (error) {
+                                                                alert("Error deleting event.");
+                                                            }
+                                                        }
+                                                    }}
+                                                    disabled={isDeletingEvent}
+                                                    className="w-full inline-flex items-center justify-center px-4 py-2.5 border border-slate-700 text-slate-300 text-sm font-medium rounded-lg hover:bg-slate-800 hover:border-slate-600 transition-all duration-200 disabled:opacity-50"
+                                                >
+                                                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                    </svg>
+                                                    {isDeletingEvent ? "Deleting..." : "Delete"}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
                             </div>
                         )}
                     </div>
@@ -329,34 +266,17 @@ export default function Dashboard({APIEvents}) {
 
             <SignedOut>
                 <div className="min-h-screen flex items-center justify-center px-4">
-                    <div
-                        className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl p-6 sm:p-12 max-w-md w-full text-center border border-white/20">
-                        <div
-                            className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-8">
-                            <svg
-                                className="w-10 h-10 text-white"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                />
+                    <div className="bg-slate-900/90 backdrop-blur-xl rounded-2xl border border-slate-800 p-8 max-w-md w-full text-center">
+                        <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl">
+                            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                         </div>
-                        <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-4">
-                            Welcome to RollWise
-                        </h1>
-                        <p className="text-slate-600 text-base sm:text-lg mb-8 leading-relaxed px-2">
-                            Smart attendance tracking made simple. Sign in to manage your events and track participation
-                            effortlessly.
-                        </p>
+                        <h1 className="text-2xl font-bold text-white mb-3">RollWise</h1>
+                        <p className="text-slate-400 text-lg mb-8">Professional attendance management platform</p>
                         <button
                             onClick={() => router.push("/")}
-                            className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-2 sm:py-4 px-4 sm:px-8 rounded-2xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm sm:text-base"
+                            className="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-xl hover:bg-blue-500 transition-all duration-200 shadow-lg shadow-blue-600/25"
                         >
                             Sign In to Continue
                         </button>
@@ -364,59 +284,53 @@ export default function Dashboard({APIEvents}) {
                 </div>
             </SignedOut>
 
-
+            {/* Modern New Event Modal */}
             {showNewEventForm && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div
-                        className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl w-full max-w-md border border-white/20 overflow-hidden">
-                        <div className="p-6 sm:p-8">
-                            <div className="text-center mb-6 px-2">
-                                <div
-                                    className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                                    <svg
-                                        className="w-8 h-8 text-white"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                                        />
-                                    </svg>
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-slate-900/95 backdrop-blur-xl rounded-2xl border border-slate-800 w-full max-w-md shadow-2xl">
+                        <div className="p-6">
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
+                                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                        </svg>
+                                    </div>
+                                    <h3 className="text-xl font-semibold text-white">Create Event</h3>
                                 </div>
-                                <h2 className="text-xl sm:text-2xl font-bold text-slate-800 mb-2">
-                                    Create New Event
-                                </h2>
-                                <p className="text-slate-600 text-base sm:text-lg">
-                                    Give your event a memorable name
-                                </p>
+                                <button
+                                    onClick={() => setShowNewEventForm(false)}
+                                    className="text-slate-400 hover:text-white transition-colors p-1"
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </button>
                             </div>
 
-                            <div className="mb-6 px-2">
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Event Name</label>
+                            <div className="mb-6">
+                                <label className="block text-sm font-medium text-slate-300 mb-3">Event Name</label>
                                 <input
-                                    className="w-full p-2 sm:p-4 border-2 border-slate-200 text-slate-800 rounded-2xl focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition-all duration-200 bg-white/60 backdrop-blur-sm text-sm sm:text-base"
+                                    className="w-full p-3 bg-slate-800 border border-slate-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder-slate-500"
                                     type="text"
-                                    placeholder="Enter event name..."
+                                    placeholder="Enter event name"
                                     value={eventName}
                                     onChange={(e) => setEventName(e.target.value)}
                                     onKeyPress={(e) => e.key === "Enter" && handleNewEvent()}
                                 />
                             </div>
-                            <div className="flex flex-col sm:flex-row gap-3 px-2">
+
+                            <div className="flex gap-3">
                                 <button
-                                    className="flex-1 px-4 py-2 sm:px-6 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-2xl hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-30 text-sm sm:text-base"
                                     onClick={handleNewEvent}
                                     disabled={isCreatingEvent}
+                                    className="flex-1 bg-blue-600 text-white font-medium py-2.5 px-4 rounded-lg hover:bg-blue-500 transition-colors disabled:opacity-50 shadow-lg shadow-blue-600/20"
                                 >
-                                    Create Event
+                                    {isCreatingEvent ? "Creating..." : "Create Event"}
                                 </button>
                                 <button
-                                    className="flex-1 px-4 py-2 sm:px-6 sm:py-4 bg-gradient-to-r from-slate-400 to-slate-500 text-white font-semibold rounded-2xl hover:from-slate-500 hover:to-slate-600 transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base"
                                     onClick={() => setShowNewEventForm(false)}
+                                    className="flex-1 bg-slate-700 text-slate-300 font-medium py-2.5 px-4 rounded-lg hover:bg-slate-600 transition-colors"
                                 >
                                     Cancel
                                 </button>
@@ -426,42 +340,36 @@ export default function Dashboard({APIEvents}) {
                 </div>
             )}
 
+            {/* Modern Mark Attendance Modal */}
             {openEntering && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div
-                        className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl w-full max-w-md border border-white/20 overflow-hidden">
-                        <div className="p-6 sm:p-8">
-                            <div className="text-center mb-6 px-2">
-                                <div
-                                    className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                                    <svg
-                                        className="w-8 h-8 text-white"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                                        />
-                                    </svg>
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-slate-900/95 backdrop-blur-xl rounded-2xl border border-slate-800 w-full max-w-md shadow-2xl">
+                        <div className="p-6">
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center">
+                                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                    </div>
+                                    <h3 className="text-xl font-semibold text-white">Mark Attendance</h3>
                                 </div>
-                                <h2 className="text-xl sm:text-2xl font-bold text-slate-800 mb-2">
-                                    Mark Attendance
-                                </h2>
-                                <p className="text-slate-600 text-base sm:text-lg">
-                                    Enter the event code
-                                </p>
+                                <button
+                                    onClick={() => setOpenEntering(false)}
+                                    className="text-slate-400 hover:text-white transition-colors p-1"
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </button>
                             </div>
 
-                            <div className="mb-6 px-2">
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Event Code</label>
+                            <div className="mb-6">
+                                <label className="block text-sm font-medium text-slate-300 mb-3">Event Code</label>
                                 <input
-                                    className="w-full p-2 sm:p-4 border-2 border-slate-200 text-slate-800 rounded-2xl focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition-all duration-200 bg-white/60 backdrop-blur-sm text-sm sm:text-base"
+                                    className="w-full p-3 bg-slate-800 border border-slate-700 text-white rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 placeholder-slate-500"
                                     type="text"
-                                    placeholder="Enter event code..."
+                                    placeholder="Enter event code"
                                     value={eventCode}
                                     onChange={(e) => setEventCode(e.target.value)}
                                     onKeyPress={(e) => {
@@ -473,12 +381,11 @@ export default function Dashboard({APIEvents}) {
                                             router.push("/scan/" + eventCode);
                                         }
                                     }}
-
                                 />
                             </div>
-                            <div className="flex flex-col sm:flex-row gap-3 px-2">
+
+                            <div className="flex gap-3">
                                 <button
-                                    className="flex-1 px-4 py-2 sm:px-6 sm:py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-2xl hover:from-emerald-600 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-30 text-sm sm:text-base"
                                     onClick={() => {
                                         if (!eventCode.trim()) {
                                             alert("Event code cannot be empty");
@@ -486,12 +393,13 @@ export default function Dashboard({APIEvents}) {
                                         }
                                         router.push("/scan/" + eventCode);
                                     }}
+                                    className="flex-1 bg-emerald-600 text-white font-medium py-2.5 px-4 rounded-lg hover:bg-emerald-500 transition-colors shadow-lg shadow-emerald-600/20"
                                 >
-                                    Mark Attendance
+                                    Submit
                                 </button>
                                 <button
-                                    className="flex-1 px-4 py-2 sm:px-6 sm:py-4 bg-gradient-to-r from-slate-400 to-slate-500 text-white font-semibold rounded-2xl hover:from-slate-500 hover:to-slate-600 transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base"
                                     onClick={() => setOpenEntering(false)}
+                                    className="flex-1 bg-slate-700 text-slate-300 font-medium py-2.5 px-4 rounded-lg hover:bg-slate-600 transition-colors"
                                 >
                                     Cancel
                                 </button>
